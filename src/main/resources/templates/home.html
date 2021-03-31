@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <!-- NAV-->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/author/{id}(id=${User.id})}">My posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/post/new}">Add post</a>
+                </li>
+            </ul>
+
+            <button sec:authorize="isAuthenticated()" th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')}" class="btn btn-primary download_CSV" type="submit" style="margin-right: 50px" th:href="${storageService.getCSV()}"><i class="fa fa-download"></i> Download CSV</button>
+            <div class="dropdown" style="margin-right: 50px;">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort by
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" th:href="@{/sort/number}">Number</a>
+                    <a class="dropdown-item" th:href="@{/sort/number_reverse}">Number (Reverse)</a>
+                    <a class="dropdown-item" th:href="@{/sort/author}">Author</a>
+                    <a class="dropdown-item" th:href="@{/sort/author_reverse}">Author (Reverse)</a>
+                    <a class="dropdown-item" th:href="@{/sort/content}">Content</a>
+                    <a class="dropdown-item" th:href="@{/sort/content_reverse}">Content (Reverse)</a>
+                </div>
+            </div>
+            <form class="form-inline my-2 my-lg-0" method="POST" action="#" th:action="@{/search}" enctype='multipart/form-data'>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" th:field="${filter.filter}">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <div class="navbar-nav">
+                <a th:href="@{/registration}" sec:authorize="isAnonymous()" class="nav-item nav-link active">Sign up</a>
+                <a th:href="@{/login}" sec:authorize="isAnonymous()" class="nav-item nav-link active">Sign in</a>
+                <a th:href="@{/logout}" sec:authorize="isAuthenticated()" class="nav-item nav-link active">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <th:block th:each="post : ${posts}">
+            <div class="post_box">
+                <h3><td th:text="${'Post '+post.getId()}"></td></h3>
+                <p><td th:utext="${post.getPost_content()}"></td></p>
+                <h6>
+                    Tags:
+                    <th:block th:each="tag : ${#strings.arraySplit(post.getTags(),' ')}">
+                        <a th:text="${' #'+tag}" th:href="@{/post/tags/{tagg}(tagg=${tag})}"></a>
+                    </th:block>
+                </h6>
+                <h6>Authors:
+                    <th:block th:each="postAuthor : ${pam.findByPostId(post.getId())}">
+                        <a th:href="@{/author/{id}(id=${postAuthor.getAuthor().getId()})}" th:text="${am.findById(postAuthor.getAuthor().getId()).get().getUsername()}"></a>
+                    </th:block>
+                </h6>
+                <td><a th:href="@{/post/{id}(id=${post.getId()})}" class="btn btn-outline-dark" role="button">More</a></td>
+            </div>
+        </th:block>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+        $('button.download_CSV').click(function(e) {
+        e.preventDefault();
+        window.open('/files/Attachment.csv');
+        window.open('/files/Author.csv');
+        window.open('/files/Comment.csv');
+        window.open('/files/Post.csv');
+        window.open('/files/Post_Author.csv');
+        });
+    </script>
+</body>
+</html>

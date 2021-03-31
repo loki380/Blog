@@ -1,0 +1,72 @@
+body{
+    background-color: black;
+}
+main{
+    width: 60%;
+    height: 100%;
+    margin-left: 20%;
+    margin-right: 20%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    background-color: #FFF8DC;
+}
+header .navbar-dark{
+    background-color: #262626;
+}
+.navbar-nav{
+    padding-left: 2%;
+}
+.post_box{
+    display: flex;
+    flex-flow: column wrap;
+}
+    .post_box:nth-child(even){
+        padding: 10% 20%;
+        color:white;
+        background-color: #262626;
+    }
+    .post_box:nth-child(odd){
+        padding: 10% 20%;
+        color: black;
+        background-color: #FFF8DC;
+    }
+    .post_box:nth-child(even) .btn-outline-dark{
+        color:white;
+        border-color: white ;
+    }
+    .post_box:nth-child(even) .btn-outline-dark:hover{
+        background-color: #FFF8DC;
+        color: #262626;
+    }
+    .post_box:nth-child(odd) .btn-outline-dark:hover{
+        background-color: #262626;
+    }
+    .post_box form{
+        width: 100%;
+        margin: 0;
+    }
+.btn-outline-dark{
+    margin-top: 20px;
+    width: 300px;
+    align-self: center;
+}
+h1{
+    margin-bottom: 20px;
+    text-align: center;
+}
+.comment_box{
+    margin-top:20px;
+    display: flex;
+    flex-flow: column wrap;
+}
+    .comment_box .btn-outline-dark{
+        margin-top: 0;
+        width: 100px;
+        margin-bottom: 30px;
+    }
+    .comment_box form .btn-outline-dark {
+        width: 150px;
+    }
+.validationError{
+    color: red;
+}

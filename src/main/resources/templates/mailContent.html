@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        header{
+            background-color: rgba(0, 140, 255, 0.993);
+            text-align: center;
+            padding:8px;
+            color:white;
+        }
+        main{
+            text-align: center;
+            color:rgba(29, 29, 36, 0.842)
+        }
+        main h1,h2{
+            margin-top: 50px;
+        }
+        main h2{
+            margin-bottom: 40px;
+        }
+        footer{
+            background-color: rgba(0, 140, 255, 0.993);
+            text-align: center;
+            padding: 10px;
+            color:white;
+        }
+    </style>
+</head>
+<body style="text-align: center;">
+<header><h2>Congratulations, You have been succesfully registered!</h2></header>
+<main>
+    <div th:text="${'First name: ' + user.firstName}"></div>
+    <div th:text="${'Last name: ' + user.lastName}"></div>
+    <div th:text="${'Username: ' + user.username}"></div>
+</main>
+<footer><h2>Thank you!</h2></footer>
+</body>
+</html>

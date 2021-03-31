@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <header>
+        <!-- NAV-->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/post/new}">Add post</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/post/edit/{id}(id=${post.getId()})}">Edit post</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/post/delete/{id}(id=${post.getId()})}" data-toggle="confirmation" >Delete post</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="post_box">
+            <h1><td th:text="${'Post '+post.getId()}"></td></h1>
+            <p><td th:utext="${post.getPost_content()}"></td></p>
+            <div style="display: flex; flex-direction: row;">
+                <h6 style="margin-right: 5px;">Tags: </h6>
+                <td th:text="${' '+post.getTags()}"></td>
+            </div>
+            <div style="display: flex; flex-direction: row;">
+                <h6 style="margin-right: 5px;">Authors: </h6>
+                <th:block th:each="author : ${authors}">
+                    <td th:text="${author != null} ? ${' '+author.getFirst_name()+' '+author.getLast_name()+' ('+author.getUsername()+')'}"></td>
+                    <br>
+                </th:block>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <h6 style="margin-right: 5px;">Attachments: </h6>
+                <th:block th:each="attachment : ${attachments}">
+                    <a href="" th:text="${attachment.getFilename()}"></a>
+                </th:block>
+            </div>
+
+            <div style="background-color: #262626; height: 1px; margin-top: 20px;"></div>
+
+            <div class="comment_box">
+                <h5 style="margin-right: 5px;">Comments: </h5>
+                <form th:action="@{/comment/new/{id}(id=${post.getId()})}" enctype='multipart/form-data' method="post">
+                    <div class="mb-3" sec:authorize="isAnonymous()">
+                        <input class="form-control form-control-sm" type="text" th:field="*{newComment.username}" id="username" placeholder="Username">
+                        <span class="validationError"
+                              th:if="${#fields.hasErrors('newComment.username')}"
+                              th:errors="*{newComment.username}">newComment.username Error
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" id="comment_content" th:field="*{newComment.comment_content}" rows="3" placeholder="Comment Content"></textarea>
+                        <span class="validationError"
+                              th:if="${#fields.hasErrors('newComment.comment_content')}"
+                              th:errors="*{newComment.comment_content}">newComment.comment_content Error
+                        </span>
+                    </div>
+                    <button type="submit" class="btn btn-outline-dark">Add Comment</button>
+                </form>
+                <th:block class="comment_users" th:each="comment : ${comments}">
+                    <p style="margin-bottom: 0;">Username: <a th:text="${comment.getUsername()}" th:href="@{/comment/users/{user}(user=${comment.getUsername()})}"></a></p>
+                    <p><td th:text="${comment.getComment_content()}"></td></p>
+                    <div>
+                        <td><a th:href="@{/comment/edit/{id}(id=${comment.getId()})}" sec:authorize="isAuthenticated()" class="btn btn-outline-dark" role="button">Edit</a></td>
+                        <td><a th:href="@{/comment/delete/{id}(id=${comment.getId()})}" sec:authorize="isAuthenticated()" data-toggle="confirmation" class="btn btn-outline-dark" role="button">Delete</a></td>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation2/4.1.0/bootstrap-confirmation.min.js" crossorigin="anonymous"></script>
+    <script>
+        $('[data-toggle=confirmation]').confirmation({
+            rootSelector: '[data-toggle=confirmation]',
+        });
+    </script>
+</body>
+</html>
